@@ -49,7 +49,7 @@ public class Listener extends ListenerAdapter {
         }
 
         event.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
-        event.getJDA().getPresence().setActivity(Activity.watching("Prefix [ and "+userCount+" users"));
+        event.getJDA().getPresence().setActivity(Activity.watching(userCount+" users"));
 
         //event.getJDA().getPresence().setActivity(Activity.streaming("Default prefix " + Configuration.get("prefix") + " | Rng:" + numberChosen, "https://twitch.tv/goseale"));
 
@@ -58,12 +58,6 @@ public class Listener extends ListenerAdapter {
         System.out.println("Logged in as: " + event.getJDA().getSelfUser().getAsTag());
         System.out.println("\n");
         System.out.println("!BOT READY AND FUNCTIONAL!\n");
-
-        WebUtils.ins.getJSONObject("https://api.ipify.org?format=json").async((json) -> {
-            System.out.println(json);
-            System.out.println("");
-        });
-
     }
 
     public String getTime(int numero) {
