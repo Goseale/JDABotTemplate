@@ -1,5 +1,6 @@
 package DiscordBot;
 
+import DiscordBot.Events.SlashCommand;
 import DiscordBot.Util.*;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import me.duncte123.botcommons.BotCommons;
@@ -22,8 +23,9 @@ import java.util.*;
 public class Listener extends ListenerAdapter {
     private CommandManager manager;
 
-    public Listener(EventWaiter waiter) {
-        final CommandManager manager = new CommandManager(waiter);
+    public Listener(EventWaiter waiter, JDA jda) {
+        final CommandManager manager = new CommandManager(waiter, jda);
+        jda.addEventListener(new SlashCommand(manager));
         this.manager = manager;
     }
 

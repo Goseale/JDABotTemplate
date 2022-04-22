@@ -48,7 +48,7 @@ public class Bot implements EventListener {
 
         System.out.println("Adding events...");
         jda.addEventListener(waiter);
-        jda.addEventListener(new Listener(waiter));
+        jda.addEventListener(new Listener(waiter,jda));
         new BOT_MONITOR(jda);
     }
 

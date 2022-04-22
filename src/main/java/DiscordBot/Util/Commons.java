@@ -1,10 +1,15 @@
 package DiscordBot.Util;
 
+import DiscordBot.Command.CommandContext;
 import DiscordBot.Configuration;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -14,6 +19,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.List;
 import java.util.*;
 
@@ -216,5 +222,38 @@ public class Commons {
             Configuration.setJsonConfig(jsonConfig);
             return;
         }
+    }
+
+    public static void coolEmbed(CommandContext ctx, TextChannel channel, String title, String message, Color color) {
+        EmbedBuilder emb = new EmbedBuilder();
+        emb.setColor(Color.red);
+        emb.setAuthor(title, ctx.getSelfUser().getAvatarUrl(), ctx.getSelfUser().getAvatarUrl());
+        emb.setDescription("> "+message);
+        ctx.getChannel().sendMessageEmbeds(emb.build()).delay(Duration.ofSeconds(3)).queue(
+                message1 -> {
+                    message1.delete().queue();
+                }
+        );
+    }
+    public static EmbedBuilder coolEmbedGet(CommandContext ctx, String title, String message, Color color) {
+        EmbedBuilder emb = new EmbedBuilder();
+        emb.setColor(color);
+        emb.setAuthor(title, ctx.getSelfUser().getAvatarUrl(), ctx.getSelfUser().getAvatarUrl());
+        emb.setDescription("> "+message);
+        return emb;
+    }
+    public static EmbedBuilder coolEmbedGet(JDA jda, String title, String message, Color color) {
+        EmbedBuilder emb = new EmbedBuilder();
+        emb.setColor(color);
+        emb.setAuthor(title, jda.getSelfUser().getAvatarUrl(), jda.getSelfUser().getAvatarUrl());
+        emb.setDescription("> "+message);
+        return emb;
+    }
+    public static EmbedBuilder coolEmbedGet(SlashCommandEvent ctx, String title, String message, Color color) {
+        EmbedBuilder emb = new EmbedBuilder();
+        emb.setColor(color);
+        emb.setAuthor(title, ctx.getJDA().getSelfUser().getAvatarUrl(), ctx.getJDA().getSelfUser().getAvatarUrl());
+        emb.setDescription("> "+message);
+        return emb;
     }
 }

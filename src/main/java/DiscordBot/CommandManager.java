@@ -1,11 +1,17 @@
 package DiscordBot;
 
 import DiscordBot.Command.CommandContext;
+import DiscordBot.Command.Commands.Normal.C_Eval;
 import DiscordBot.Command.Commands.Normal.C_Help;
 import DiscordBot.Command.Commands.Normal.C_Ping;
 import DiscordBot.Command.ICommand;
+import DiscordBot.Command.ICommandSlash;
+import DiscordBot.Command.Slash.Normal.SC_Help;
+import DiscordBot.Command.Slash.Normal.SC_Ping;
+import DiscordBot.Command.Slash.Owner.SC_UpdateSlashes;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -20,18 +26,26 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class CommandManager {
-    private final static List<ICommand> commands = new ArrayList<>();
+    public final static List<ICommand> commands = new ArrayList<>();
+    public final static List<ICommandSlash> slashCommands = new ArrayList<ICommandSlash>();
 
     public static List<String> cooldown = new ArrayList<>();
     public static List<String> blockedCMD = new ArrayList<>();
 
     public static String getPrefix = null;
 
-    public CommandManager(EventWaiter waiter) {
+    public CommandManager(EventWaiter waiter, JDA jda) {
 
         addCommand(new C_Ping());
         addCommand(new C_Help(this));
+        addCommand(new C_Eval(waiter,this));
 
+        addSlashCommand(new SC_UpdateSlashes(jda, this));
+        addSlashCommand(new SC_Help(this,waiter));
+        addSlashCommand(new SC_Ping());
+
+        //Uncomment the line below on the first run to register the slash commands
+        //Slash.updateCommands(jda,this);
 
     }
 
@@ -48,9 +62,23 @@ public class CommandManager {
         commands.add(cmd);
     }
 
+    private void addSlashCommand(ICommandSlash cmd) {
+        boolean nameFound = this.slashCommands.stream().anyMatch((it) -> it.getName().equalsIgnoreCase(cmd.getName()));
+
+        if (nameFound) {
+            System.out.println("===[ COMMAND WITH SAME NAME FOUND! ]===");
+            System.out.println(cmd.getName());
+            System.out.println("=======================================");
+            throw new IllegalArgumentException("A command with this name is already present");
+        }
+
+        slashCommands.add(cmd);
+    }
+
     public List<ICommand> getCommands() {
         return commands;
     }
+    public List<ICommandSlash> getSlashCommands() {return slashCommands;}
 
     @Nullable
     public ICommand getCommand(String search) {
@@ -185,5 +213,4 @@ public class CommandManager {
 
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
-
 }
