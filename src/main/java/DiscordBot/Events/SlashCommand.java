@@ -27,11 +27,9 @@ public class SlashCommand extends ListenerAdapter {
 
         if (subcmd == null) {
             for (ICommandSlash slashCommand : manager.getSlashCommands()) {
-                if (slashCommand.getTopCommand().equals("_")) {
-                    if (slashCommand.getName().equals(cmd)) {
-                        slashCommand.handle(event);
-                        return;
-                    }
+                if (slashCommand.getName().equals(cmd)) {
+                    slashCommand.handle(event);
+                    return;
                 }
             }
         }

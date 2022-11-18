@@ -15,9 +15,7 @@ public interface ICommandSlash {
         return 0;
     }
     default String getCategory() {return "Normal";}
-    default String getTopCommand() {return "_";}
     default CommandData getSlash() {return null;}
-    default SubcommandData getSubSlash() {return null;}
     default Boolean isHidden() {return false;}
     default Boolean isDisabled() {return false;}
 }

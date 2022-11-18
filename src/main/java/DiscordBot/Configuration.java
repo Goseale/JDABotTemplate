@@ -16,12 +16,24 @@ import java.util.stream.Collectors;
 
 public class Configuration {
 
-   private static final Dotenv dotenv = Dotenv.load();
-
-
     public static String get(String key) {
-        String d = dotenv.get(key.toUpperCase());
-        return d;
+        System.out.println("[ENV] Retrieving "+key);
+        if (System.getenv(key.toUpperCase()) != null) {
+            System.out.println("[ENV] Success");
+            return System.getenv(key.toUpperCase());
+        } else {
+            System.out.println("[ENV] System var: "+key+" not found. Attempting .env");
+            String d = null;
+            try {
+                Dotenv dotenv = Dotenv.load();
+                d = dotenv.get(key.toUpperCase());
+                System.out.println("[ENV] Success");
+            } catch (Exception e) {
+                System.out.println("[ENV] Failed. Returning blank");
+                return "";
+            }
+            return d;
+        }
     }
 
 

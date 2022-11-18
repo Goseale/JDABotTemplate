@@ -1,9 +1,7 @@
 package DiscordBot.Command.Slash.Normal;
 
-import DiscordBot.Command.ICommand;
 import DiscordBot.Command.ICommandSlash;
 import DiscordBot.CommandManager;
-import DiscordBot.Util.Commons;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -186,7 +184,7 @@ public class SC_Help implements ICommandSlash {
 
                                 StringBuilder sb = new StringBuilder();
                                 int count = 1;
-                                for (ICommand command : manager.getCommands()) {
+                                for (ICommandSlash command : manager.getSlashCommands()) {
                                     if (!command.getCategory().equals("Owner")) {
 
                                         if (count % 5 == 0) {

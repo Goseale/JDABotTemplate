@@ -104,7 +104,7 @@ public class Listener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
         final String guildID = event.getGuild().getId();
-        String prefix = Values.PREFIXES.computeIfAbsent(guildID, this::getPrefix);
+        String prefix = "<@!"+event.getJDA().getSelfUser().getId()+">";
         String raw = event.getMessage().getContentRaw();
         User user = event.getAuthor();
 
@@ -112,12 +112,10 @@ public class Listener extends ListenerAdapter {
             return;
         }
 
-        if (raw.startsWith("<@!338367109136646154>")) {
+        if (raw.trim().equalsIgnoreCase("<@!"+event.getJDA().getSelfUser().getId()+">")) {
             EmbedBuilder emb = new EmbedBuilder();
             emb.setTitle("Hi " + event.getAuthor().getName());
-            emb.setDescription("The prefix for this guild is set to: `" + prefix + "`\n\n" +
-                    "If you want to change the prefix run `" + prefix + "setprefix [newPrefix]`\n" +
-                    "If the bot is not responding to the prefix, please dm the bot the issue");
+            emb.setDescription("The prefix for this bot is / (Slash Command)`");
             emb.setColor(Color.BLUE);
             emb.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl());
             try {
@@ -128,14 +126,6 @@ public class Listener extends ListenerAdapter {
 
         }
 
-        if (raw.startsWith(prefix)) {
-            manager.handle(event, prefix);
-        }
-
-    }
-
-    private String getPrefix(String guildID) {
-        return Configuration.get("prefix");
     }
 
     public static void loadConfiguration(JDA jda) {

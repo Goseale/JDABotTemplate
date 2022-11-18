@@ -19,56 +19,18 @@ public class Slash {
         CommandListUpdateAction cmdUpdate = jda.updateCommands();
 
         LinkedList<String> assigned = new LinkedList<>();
-        manager.getSlashCommands().stream().map(ICommandSlash::getTopCommand).forEach(
-                (it) -> {
-                    if (assigned.contains(it)) return;
-                    assigned.add(it);
+        for (ICommandSlash command : manager.getSlashCommands()) {
+            if (command.isHidden()) {
+                continue;
+            }
 
-                    if (it.equals("_")) {
+            CommandData cmd = new CommandData(command.getName(), Commons.trimToInt(command.getHelp(),100));
+            if (command.getSlash() != null) {
+                cmd = command.getSlash();
+            }
 
-                        for (ICommandSlash command : manager.getSlashCommands()) {
-                            if (command.getTopCommand().equals(it)) {
-                                if (command.isHidden()) {
-                                    continue;
-                                }
-
-                                CommandData cmd = new CommandData(command.getName().replace("g.", "gose").replace("{.","gose"), Commons.trimToInt("|"+command.getHelp(), 100));
-                                if (command.getSlash() != null) {
-                                    cmd = command.getSlash();
-                                }
-
-                                cmdUpdate.addCommands(cmd);
-                            }
-                        }
-
-                        return;
-                    }
-
-
-
-
-
-                    CommandData category = new CommandData(it.toLowerCase(), "Command category");
-
-
-                    for (ICommandSlash command : manager.getSlashCommands()) {
-                        if (command.getTopCommand().equals(it)) {
-                            if (command.isHidden()) {
-                                continue;
-                            }
-
-                            SubcommandData cmd = new SubcommandData(command.getName().replace("g.", "gose").replace("{.","gose"), Commons.trimToInt("|"+command.getHelp(), 100));
-                            if (command.getSubSlash() != null) {
-                                cmd = command.getSubSlash();
-                            }
-
-                            category.addSubcommands(cmd);
-                        }
-                    }
-
-                    cmdUpdate.addCommands(category);
-                }
-        );
+            cmdUpdate.addCommands(cmd);
+        }
         cmdUpdate.queue();
     }
     public static void updateCommands(JDA jda, CommandManager manager, InteractionHook slash){
@@ -76,56 +38,18 @@ public class Slash {
         CommandListUpdateAction cmdUpdate = jda.updateCommands();
 
         LinkedList<String> assigned = new LinkedList<>();
-        manager.getSlashCommands().stream().map(ICommandSlash::getTopCommand).forEach(
-                (it) -> {
-                    if (assigned.contains(it)) return;
-                    assigned.add(it);
+        for (ICommandSlash command : manager.getSlashCommands()) {
+            if (command.isHidden()) {
+                continue;
+            }
 
-                    if (it.equals("_")) {
+            CommandData cmd = new CommandData(command.getName(), Commons.trimToInt(command.getHelp(),100));
+            if (command.getSlash() != null) {
+                cmd = command.getSlash();
+            }
 
-                        for (ICommandSlash command : manager.getSlashCommands()) {
-                            if (command.getTopCommand().equals(it)) {
-                                if (command.isHidden()) {
-                                    continue;
-                                }
-
-                                CommandData cmd = new CommandData(command.getName().replace("g.", "gose").replace("{.","gose"), Commons.trimToInt("|"+command.getHelp(), 100));
-                                if (command.getSlash() != null) {
-                                    cmd = command.getSlash();
-                                }
-
-                                cmdUpdate.addCommands(cmd);
-                            }
-                        }
-
-                        return;
-                    }
-
-
-
-
-
-                    CommandData category = new CommandData(it.toLowerCase(), "Command category");
-
-
-                    for (ICommandSlash command : manager.getSlashCommands()) {
-                        if (command.getTopCommand().equals(it)) {
-                            if (command.isHidden()) {
-                                continue;
-                            }
-
-                            SubcommandData cmd = new SubcommandData(command.getName().replace("g.", "gose").replace("{.","gose"), Commons.trimToInt("|"+command.getHelp(), 100));
-                            if (command.getSubSlash() != null) {
-                                cmd = command.getSubSlash();
-                            }
-
-                            category.addSubcommands(cmd);
-                        }
-                    }
-
-                    cmdUpdate.addCommands(category);
-                }
-        );
+            cmdUpdate.addCommands(cmd);
+        }
         cmdUpdate.queue(
                 (__) -> {
                     slash.editOriginal("Slash commands have been updated.").queue();
