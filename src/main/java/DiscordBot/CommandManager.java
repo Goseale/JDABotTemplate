@@ -1,6 +1,5 @@
 package DiscordBot;
 
-import DiscordBot.Command.CommandContext;
 import DiscordBot.Command.ICommandSlash;
 import DiscordBot.Command.Slash.Normal.SC_Help;
 import DiscordBot.Command.Slash.Normal.SC_Ping;
@@ -54,11 +53,6 @@ public class CommandManager {
                 System.err.println(e);
             }
         }).start();
-    }
-
-    public static void addCooldown(CommandContext ctx, int timeInMS, String command) {
-        cooldown.add(ctx.getAuthor().getId() + command);
-        setTimeout(() -> cooldown.remove(ctx.getAuthor().getId() + command), timeInMS);
     }
 
     public static String capitalize(String str) {

@@ -4,8 +4,9 @@ import DiscordBot.Command.ICommandSlash;
 import DiscordBot.Util.Commons;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 import java.awt.*;
 import java.time.OffsetDateTime;
@@ -13,7 +14,7 @@ import java.time.temporal.ChronoField;
 
 public class SC_Ping implements ICommandSlash {
     @Override
-    public void handle(SlashCommandEvent event) {
+    public void handle(SlashCommandInteractionEvent event) {
 
         JDA jda = event.getJDA();
         EmbedBuilder emb = new EmbedBuilder();
@@ -70,7 +71,7 @@ public class SC_Ping implements ICommandSlash {
 
     @Override
     public CommandData getSlash() {
-        return new CommandData(this.getName(), "Gets a responce from the bot");
+        return Commands.slash(this.getName(), "Gets a responce from the bot");
     }
 
     public String formatN(String count, int digits) {

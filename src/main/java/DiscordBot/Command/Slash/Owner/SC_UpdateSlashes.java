@@ -6,8 +6,9 @@ import DiscordBot.Configuration;
 import DiscordBot.Slash;
 import DiscordBot.Util.Values;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 public class SC_UpdateSlashes implements ICommandSlash {
     private final CommandManager cmm;
@@ -19,7 +20,7 @@ public class SC_UpdateSlashes implements ICommandSlash {
     }
 
     @Override
-    public void handle(SlashCommandEvent event) {
+    public void handle(SlashCommandInteractionEvent event) {
 
         if (!event.getUser().getId().equals(Configuration.get("OWNER_ID"))) {
             event.reply("This is a dev only command.").setEphemeral(true).queue();
@@ -49,6 +50,6 @@ public class SC_UpdateSlashes implements ICommandSlash {
 
     @Override
     public CommandData getSlash() {
-        return new CommandData(this.getName(), "Makes the bot perform a slash command update");
+        return Commands.slash(this.getName(), "Makes the bot perform a slash command update");
     }
 }

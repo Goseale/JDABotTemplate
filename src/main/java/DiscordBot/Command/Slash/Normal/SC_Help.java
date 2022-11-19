@@ -4,16 +4,18 @@ import DiscordBot.Command.ICommandSlash;
 import DiscordBot.CommandManager;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.Component;
-import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.SelectMenuInteraction;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ public class SC_Help implements ICommandSlash {
     }
 
     @Override
-    public void handle(SlashCommandEvent event) {
+    public void handle(SlashCommandInteractionEvent event) {
         EmbedBuilder emb = new EmbedBuilder();
 
         LinkedList<String> rIndicators = new LinkedList<>(Arrays.asList(new String[]{"\uD83D\uDD10", "\uD83E\uDDF6", "\uD83D\uDEE0", "\uD83D\uDC7E", "\uD83D\uDD2C", "\uD83E\uDD16", "\uD83D\uDCFB", "\uD83C\uDDED", "\uD83C\uDDEE", "\uD83C\uDDEF", "\uD83C\uDDF0", "\uD83C\uDDF1", "\uD83C\uDDF2", "\uD83C\uDDF3", "\uD83C\uDDF4", "\uD83C\uDDF5", "\uD83C\uDDF6", "\uD83C\uDDF7", "\uD83C\uDDF8", "\uD83C\uDDF9", "\uD83C\uDDFA", "\uD83C\uDDFB", "\uD83C\uDDFC", "\uD83C\uDDFD", "\uD83C\uDDFE", "\uD83C\uDDFF"}));
@@ -100,11 +102,11 @@ public class SC_Help implements ICommandSlash {
 
     @Override
     public CommandData getSlash() {
-        return new CommandData(this.getName(), "Shows all slash commands of the bot");
+        return Commands.slash(this.getName(), "Shows all slash commands of the bot");
     }
 
-    public void spawnReactions(SlashCommandEvent ctx, InteractionHook message, LinkedList<String> rIndicators, LinkedList<String> assigned, EmbedBuilder emb) {
-        SelectionMenu.Builder selm = SelectionMenu.create("menu:help");
+    public void spawnReactions(SlashCommandInteractionEvent ctx, InteractionHook message, LinkedList<String> rIndicators, LinkedList<String> assigned, EmbedBuilder emb) {
+        SelectMenu.Builder selm = SelectMenu.create("menu:help");
         selm.setPlaceholder("Choose a section");
         selm.setRequiredRange(1,1);
 
@@ -117,19 +119,19 @@ public class SC_Help implements ICommandSlash {
             }
         }
         selm.addOption("\uD83D\uDCF0 All commands", "help"+ctx.getUser().getId()+"_menu_-1");
-        message.editOriginalEmbeds(emb.build()).setActionRows(ActionRow.of(selm.build())).queue();
+        message.editOriginalEmbeds(emb.build()).setComponents(ActionRow.of(selm.build())).queue();
         manageReactions(ctx, message, rIndicators, assigned, emb);
     }
 
-    public void manageReactions(SlashCommandEvent ctx, InteractionHook message, LinkedList<String> rIndicators, LinkedList<String> assigned, EmbedBuilder emb) {
+    public void manageReactions(SlashCommandInteractionEvent ctx, InteractionHook message, LinkedList<String> rIndicators, LinkedList<String> assigned, EmbedBuilder emb) {
         waiter.waitForEvent(
-                SelectionMenuEvent.class, (event) -> {
+                SelectMenuInteractionEvent.class, (event) -> {
                     User user = event.getUser();
                     return event.getInteraction().getSelectedOptions().get(0).getValue().contains("help"+event.getUser().getId()+"_") && !user.isBot() && event.getChannel().getId().equals(ctx.getChannel().getId());
                 },
                 (event) -> {
 
-                    MessageBuilder msb = new MessageBuilder();
+                    MessageCreateBuilder msb = new MessageCreateBuilder();
                     String id = event.getInteraction().getSelectedOptions().get(0).getValue();
 
                     try {
@@ -166,7 +168,7 @@ public class SC_Help implements ICommandSlash {
                                 }
 
                                 emb.addField("Commands", sb.toString(), true);
-                                event.reply(msb.setEmbed(emb.build()).build()).setEphemeral(true).queue(
+                                event.reply(msb.setEmbeds(emb.build()).build()).setEphemeral(true).queue(
                                         message1 -> {
                                             manageReactions(ctx, message, rIndicators, assigned, emb);
                                         }
@@ -200,7 +202,7 @@ public class SC_Help implements ICommandSlash {
                                 }
                                 emb.setDescription(description + "\n\n" + "" +
                                         "**All commands:** " + sb.toString());
-                                event.reply(msb.setEmbed(emb.build()).build()).setEphemeral(true).queue(
+                                event.reply(msb.setEmbeds(emb.build()).build()).setEphemeral(true).queue(
                                         message1 -> {
                                             manageReactions(ctx, message, rIndicators, assigned, emb);
                                         }
@@ -221,7 +223,7 @@ public class SC_Help implements ICommandSlash {
                     emb.clear();
                     emb.setColor(Color.yellow);
                     emb.setTitle("The help menu timed out");
-                    message.editOriginalEmbeds(emb.build()).setActionRows(ActionRow.of(Button.secondary(".","Help timed out").asDisabled())).queue(
+                    message.editOriginalEmbeds(emb.build()).setComponents(ActionRow.of(Button.secondary(".","Help timed out").asDisabled())).queue(
                             (__) -> {},
                             (___) -> {}
                     );

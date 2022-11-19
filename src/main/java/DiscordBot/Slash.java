@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 
@@ -24,7 +25,7 @@ public class Slash {
                 continue;
             }
 
-            CommandData cmd = new CommandData(command.getName(), Commons.trimToInt(command.getHelp(),100));
+            CommandData cmd = Commands.slash(command.getName(), Commons.trimToInt(command.getHelp(), 100));
             if (command.getSlash() != null) {
                 cmd = command.getSlash();
             }
@@ -43,7 +44,7 @@ public class Slash {
                 continue;
             }
 
-            CommandData cmd = new CommandData(command.getName(), Commons.trimToInt(command.getHelp(),100));
+            CommandData cmd = Commands.slash(command.getName(), Commons.trimToInt(command.getHelp(),100));
             if (command.getSlash() != null) {
                 cmd = command.getSlash();
             }

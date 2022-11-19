@@ -1,17 +1,15 @@
 package DiscordBot;
 
 import DiscordBot.Events.SlashCommand;
-import DiscordBot.Util.*;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import me.duncte123.botcommons.BotCommons;
-import me.duncte123.botcommons.web.WebUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.JSONObject;
 
@@ -102,7 +100,7 @@ public class Listener extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
+    public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
         final String guildID = event.getGuild().getId();
         String prefix = "<@!"+event.getJDA().getSelfUser().getId()+">";
         String raw = event.getMessage().getContentRaw();
@@ -119,7 +117,7 @@ public class Listener extends ListenerAdapter {
             emb.setColor(Color.BLUE);
             emb.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl());
             try {
-                event.getChannel().sendMessage(emb.build()).queue();
+                event.getChannel().sendMessageEmbeds(emb.build()).queue();
             } catch (Exception e) {
 
             }

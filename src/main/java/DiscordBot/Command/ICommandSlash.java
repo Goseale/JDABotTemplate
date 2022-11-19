@@ -1,12 +1,11 @@
 package DiscordBot.Command;
 
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
 public interface ICommandSlash {
 
-    void handle(SlashCommandEvent event);
+    void handle(SlashCommandInteractionEvent event);
 
     String getName();
     String getHelp();

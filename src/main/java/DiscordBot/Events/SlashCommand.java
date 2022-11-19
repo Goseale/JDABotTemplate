@@ -4,7 +4,7 @@ import DiscordBot.Command.ICommandSlash;
 import DiscordBot.CommandManager;
 import DiscordBot.Util.Commons;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ public class SlashCommand extends ListenerAdapter {
     public static List<String> cooldown = new ArrayList<>();
 
     @Override
-    public void onSlashCommand(@NotNull SlashCommandEvent event) {
+    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         String cmd = event.getCommandPath();
         String subcmd = event.getSubcommandName();
 

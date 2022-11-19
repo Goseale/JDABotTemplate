@@ -1,12 +1,11 @@
 package DiscordBot.Util;
 
-import DiscordBot.Command.CommandContext;
 import DiscordBot.Configuration;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.json.JSONObject;
 
 import java.awt.*;
@@ -223,25 +222,6 @@ public class Commons {
             return;
         }
     }
-
-    public static void coolEmbed(CommandContext ctx, TextChannel channel, String title, String message, Color color) {
-        EmbedBuilder emb = new EmbedBuilder();
-        emb.setColor(Color.red);
-        emb.setAuthor(title, ctx.getSelfUser().getAvatarUrl(), ctx.getSelfUser().getAvatarUrl());
-        emb.setDescription("> "+message);
-        ctx.getChannel().sendMessageEmbeds(emb.build()).delay(Duration.ofSeconds(3)).queue(
-                message1 -> {
-                    message1.delete().queue();
-                }
-        );
-    }
-    public static EmbedBuilder coolEmbedGet(CommandContext ctx, String title, String message, Color color) {
-        EmbedBuilder emb = new EmbedBuilder();
-        emb.setColor(color);
-        emb.setAuthor(title, ctx.getSelfUser().getAvatarUrl(), ctx.getSelfUser().getAvatarUrl());
-        emb.setDescription("> "+message);
-        return emb;
-    }
     public static EmbedBuilder coolEmbedGet(JDA jda, String title, String message, Color color) {
         EmbedBuilder emb = new EmbedBuilder();
         emb.setColor(color);
@@ -249,7 +229,7 @@ public class Commons {
         emb.setDescription("> "+message);
         return emb;
     }
-    public static EmbedBuilder coolEmbedGet(SlashCommandEvent ctx, String title, String message, Color color) {
+    public static EmbedBuilder coolEmbedGet(SlashCommandInteractionEvent ctx, String title, String message, Color color) {
         EmbedBuilder emb = new EmbedBuilder();
         emb.setColor(color);
         emb.setAuthor(title, ctx.getJDA().getSelfUser().getAvatarUrl(), ctx.getJDA().getSelfUser().getAvatarUrl());
