@@ -1,6 +1,7 @@
 package DiscordBot;
 
 import DiscordBot.Events.SlashCommand;
+import DiscordBot.Util.Values;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import me.duncte123.botcommons.BotCommons;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -50,6 +51,11 @@ public class Listener extends ListenerAdapter {
 
         event.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
         event.getJDA().getPresence().setActivity(Activity.watching(userCount+" users"));
+        event.getJDA().retrieveCommands().queue(
+                commands -> {
+                    Values.COMMAND_LIST = commands;
+                }
+        );
 
         //event.getJDA().getPresence().setActivity(Activity.streaming("Default prefix " + Configuration.get("prefix") + " | Rng:" + numberChosen, "https://twitch.tv/goseale"));
 

@@ -2,6 +2,7 @@ package DiscordBot;
 
 import DiscordBot.Command.ICommandSlash;
 import DiscordBot.Util.Commons;
+import DiscordBot.Util.Values;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -32,7 +33,15 @@ public class Slash {
 
             cmdUpdate.addCommands(cmd);
         }
-        cmdUpdate.queue();
+        cmdUpdate.queue(
+                (__) -> {
+                    jda.retrieveCommands().queue(
+                            commands -> {
+                                Values.COMMAND_LIST = commands;
+                            }
+                    );
+                }
+        );
     }
     public static void updateCommands(JDA jda, CommandManager manager, InteractionHook slash){
 
@@ -54,6 +63,11 @@ public class Slash {
         cmdUpdate.queue(
                 (__) -> {
                     slash.editOriginal("Slash commands have been updated.").queue();
+                    jda.retrieveCommands().queue(
+                            commands -> {
+                                Values.COMMAND_LIST = commands;
+                            }
+                    );
                 },
                 (___) -> {
                     slash.editOriginal("**An exception was thrown**").queue();

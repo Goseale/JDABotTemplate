@@ -2,19 +2,20 @@ package DiscordBot.Command.Slash.Normal;
 
 import DiscordBot.Command.ICommandSlash;
 import DiscordBot.CommandManager;
+import DiscordBot.Util.Values;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Component;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
-import net.dv8tion.jda.api.interactions.components.selections.SelectMenuInteraction;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 
 import java.awt.*;
@@ -149,6 +150,7 @@ public class SC_Help implements ICommandSlash {
 
                                 StringBuilder sb = new StringBuilder();
                                 int count = 1;
+
                                 for (ICommandSlash command : manager.getSlashCommands()) {
                                     if (command.getCategory().equals(cat)) {
 
@@ -156,11 +158,36 @@ public class SC_Help implements ICommandSlash {
                                             continue;
                                         }
 
-                                        if (count % 5 == 0) {
-                                            sb.append("`" + command.getName() + "`\n");
+                                        if (Values.COMMAND_LIST != null && sb.length() < 768) {
+                                            Command dSlashCMD = null;
+                                            for (Command slashCMD : Values.COMMAND_LIST) {
+                                                if (slashCMD.getName().equals(command.getName())) {
+                                                    dSlashCMD = slashCMD;
+                                                    break;
+                                                }
+                                            }
+                                            if (dSlashCMD != null) {
+                                                if (count % 5 == 0) {
+                                                    sb.append("</" + dSlashCMD.getName() + ":"+dSlashCMD.getId()+">\n");
+                                                } else {
+                                                    sb.append("</" + command.getName() + ":"+dSlashCMD.getId()+"> | ");
+                                                }
+                                            } else {
+                                                if (count % 5 == 0) {
+                                                    sb.append("`" + command.getName() + "`\n");
+                                                } else {
+                                                    sb.append("`" + command.getName() + "` | ");
+                                                }
+                                            }
                                         } else {
-                                            sb.append("`" + command.getName() + "` | ");
+                                            if (count % 5 == 0) {
+                                                sb.append("`" + command.getName() + "`\n");
+                                            } else {
+                                                sb.append("`" + command.getName() + "` | ");
+                                            }
                                         }
+
+
 
                                         count++;
 
@@ -171,7 +198,7 @@ public class SC_Help implements ICommandSlash {
                                 event.reply(msb.setEmbeds(emb.build()).build()).setEphemeral(true).queue(
                                         message1 -> {
                                             manageReactions(ctx, message, rIndicators, assigned, emb);
-                                        }
+                                        }, (___) -> {}
                                 );
 
 
