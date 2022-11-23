@@ -3,6 +3,7 @@ package DiscordBot;
 import DiscordBot.Command.ICommandSlash;
 import DiscordBot.Command.Slash.Normal.SC_Help;
 import DiscordBot.Command.Slash.Normal.SC_Ping;
+import DiscordBot.Command.Slash.Owner.SC_Eval;
 import DiscordBot.Command.Slash.Owner.SC_UpdateSlashes;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDA;
@@ -23,6 +24,7 @@ public class CommandManager {
         addSlashCommand(new SC_UpdateSlashes(jda, this));
         addSlashCommand(new SC_Help(this,waiter));
         addSlashCommand(new SC_Ping());
+        addSlashCommand(new SC_Eval(waiter,this));
 
         //Uncomment the line below on the first run to register the slash commands
         Slash.updateCommands(jda,this);

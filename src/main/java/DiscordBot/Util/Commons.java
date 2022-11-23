@@ -4,7 +4,6 @@ import DiscordBot.Configuration;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.json.JSONObject;
 
@@ -18,7 +17,6 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.List;
 import java.util.*;
 
@@ -222,8 +220,7 @@ public class Commons {
             return;
         }
     }
-    public static EmbedBuilder coolEmbedGet(JDA jda, String title, String message, Color color) {
-        EmbedBuilder emb = new EmbedBuilder();
+    public static EmbedBuilder coolEmbedGet(JDA jda, EmbedBuilder emb, String title, String message, Color color) {
         emb.setColor(color);
         emb.setAuthor(title, jda.getSelfUser().getAvatarUrl(), jda.getSelfUser().getAvatarUrl());
         emb.setDescription("> "+message);

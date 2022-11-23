@@ -56,6 +56,7 @@ public class Listener extends ListenerAdapter {
                     Values.COMMAND_LIST = commands;
                 }
         );
+        Values.OWNER_ID = Configuration.get("owner_id");
 
         //event.getJDA().getPresence().setActivity(Activity.streaming("Default prefix " + Configuration.get("prefix") + " | Rng:" + numberChosen, "https://twitch.tv/goseale"));
 

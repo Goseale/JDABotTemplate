@@ -11,6 +11,7 @@ import java.util.Map;
 public class Values {
 
     public static final Map<String, String> PREFIXES = new HashMap<>();
+    public static String OWNER_ID = "";
     public static List<Command> COMMAND_LIST = null;
 
 }
