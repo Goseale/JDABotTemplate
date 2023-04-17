@@ -9,7 +9,7 @@ import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 public class SC_DummyCommand implements ICommandSlash {
     @Override
     public void handle(SlashCommandInteractionEvent event) {
-
+        event.getChannel().sendMessage("Test from eval").queue();
     }
 
     @Override

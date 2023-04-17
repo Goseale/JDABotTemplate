@@ -2,12 +2,12 @@ package DiscordBot.Command.Slash.Normal;
 
 import DiscordBot.Command.ICommandSlash;
 import DiscordBot.CommandManager;
+import DiscordBot.Events.help.selectionMenu;
 import DiscordBot.Util.Values;
-import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Component;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 
 import java.awt.*;
@@ -26,13 +26,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class SC_Help implements ICommandSlash {
-    private final EventWaiter waiter;
     private final CommandManager manager;
     private String description = "";
 
-    public SC_Help(CommandManager manager, EventWaiter waiter) {
+    public SC_Help(CommandManager manager) {
         this.manager = manager;
-        this.waiter = waiter;
     }
 
     @Override
@@ -107,7 +105,8 @@ public class SC_Help implements ICommandSlash {
     }
 
     public void spawnReactions(SlashCommandInteractionEvent ctx, InteractionHook message, LinkedList<String> rIndicators, LinkedList<String> assigned, EmbedBuilder emb) {
-        SelectMenu.Builder selm = SelectMenu.create("menu:help");
+
+        StringSelectMenu.Builder selm = StringSelectMenu.create("menu:help");
         selm.setPlaceholder("Choose a section");
         selm.setRequiredRange(1,1);
 
@@ -125,137 +124,7 @@ public class SC_Help implements ICommandSlash {
     }
 
     public void manageReactions(SlashCommandInteractionEvent ctx, InteractionHook message, LinkedList<String> rIndicators, LinkedList<String> assigned, EmbedBuilder emb) {
-        waiter.waitForEvent(
-                SelectMenuInteractionEvent.class, (event) -> {
-                    User user = event.getUser();
-                    return event.getInteraction().getSelectedOptions().get(0).getValue().contains("help"+event.getUser().getId()+"_") && !user.isBot() && event.getChannel().getId().equals(ctx.getChannel().getId());
-                },
-                (event) -> {
-
-                    MessageCreateBuilder msb = new MessageCreateBuilder();
-                    String id = event.getInteraction().getSelectedOptions().get(0).getValue();
-
-                    try {
-
-                        if (Integer.parseInt(id.split("_")[2]) >= 0) {
-                            int rint = Integer.parseInt(id.split("_")[2]);
-                            if (rint <= (assigned.size() - 1)) {
-                                String cat = assigned.get(rint);
-
-                                emb.clear();
-                                emb.setColor(Color.green);
-                                emb.setTitle("Help menu");
-                                emb.setDescription(description);
-                                emb.addField("Category name", cat, true);
-
-                                StringBuilder sb = new StringBuilder();
-                                int count = 1;
-
-                                for (ICommandSlash command : manager.getSlashCommands()) {
-                                    if (command.getCategory().equals(cat)) {
-
-                                        if (command.isHidden() && (!ctx.getGuild().getId().equals("348649372449243137"))) {
-                                            continue;
-                                        }
-
-                                        if (Values.COMMAND_LIST != null && sb.length() < 768) {
-                                            Command dSlashCMD = null;
-                                            for (Command slashCMD : Values.COMMAND_LIST) {
-                                                if (slashCMD.getName().equals(command.getName())) {
-                                                    dSlashCMD = slashCMD;
-                                                    break;
-                                                }
-                                            }
-                                            if (dSlashCMD != null) {
-                                                if (count % 5 == 0) {
-                                                    sb.append("</" + dSlashCMD.getName() + ":"+dSlashCMD.getId()+">\n");
-                                                } else {
-                                                    sb.append("</" + command.getName() + ":"+dSlashCMD.getId()+"> | ");
-                                                }
-                                            } else {
-                                                if (count % 5 == 0) {
-                                                    sb.append("`" + command.getName() + "`\n");
-                                                } else {
-                                                    sb.append("`" + command.getName() + "` | ");
-                                                }
-                                            }
-                                        } else {
-                                            if (count % 5 == 0) {
-                                                sb.append("`" + command.getName() + "`\n");
-                                            } else {
-                                                sb.append("`" + command.getName() + "` | ");
-                                            }
-                                        }
-
-
-
-                                        count++;
-
-                                    }
-                                }
-
-                                emb.addField("Commands", sb.toString(), true);
-                                event.reply(msb.setEmbeds(emb.build()).build()).setEphemeral(true).queue(
-                                        message1 -> {
-                                            manageReactions(ctx, message, rIndicators, assigned, emb);
-                                        }, (___) -> {}
-                                );
-
-
-                            } else {
-                                manageReactions(ctx, message, rIndicators, assigned, emb);
-                            }
-                        } else {
-                            if (Integer.parseInt(id.split("_")[2]) == -1) {
-                                emb.clear();
-                                emb.setColor(Color.green);
-                                emb.setTitle("Help menu");
-
-                                StringBuilder sb = new StringBuilder();
-                                int count = 1;
-                                for (ICommandSlash command : manager.getSlashCommands()) {
-                                    if (!command.getCategory().equals("Owner")) {
-
-                                        if (count % 5 == 0) {
-                                            sb.append("`" + command.getName() + "`\n");
-                                        } else {
-                                            sb.append("`" + command.getName() + "` | ");
-                                        }
-
-                                        count++;
-
-                                    }
-
-                                }
-                                emb.setDescription(description + "\n\n" + "" +
-                                        "**All commands:** " + sb.toString());
-                                event.reply(msb.setEmbeds(emb.build()).build()).setEphemeral(true).queue(
-                                        message1 -> {
-                                            manageReactions(ctx, message, rIndicators, assigned, emb);
-                                        }
-                                );
-
-
-                            }
-                            manageReactions(ctx, message, rIndicators, assigned, emb);
-                        }
-
-                    } catch (Exception e) {
-                        manageReactions(ctx, message, rIndicators, assigned, emb);
-                    }
-
-                },
-                3, TimeUnit.MINUTES,
-                () -> {
-                    emb.clear();
-                    emb.setColor(Color.yellow);
-                    emb.setTitle("The help menu timed out");
-                    message.editOriginalEmbeds(emb.build()).setComponents(ActionRow.of(Button.secondary(".","Help timed out").asDisabled())).queue(
-                            (__) -> {},
-                            (___) -> {}
-                    );
-                }
-        );
+        new selectionMenu(ctx,manager,description,message,rIndicators,assigned,emb);
     }
 
 }

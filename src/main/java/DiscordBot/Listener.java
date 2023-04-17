@@ -2,15 +2,14 @@ package DiscordBot;
 
 import DiscordBot.Events.SlashCommand;
 import DiscordBot.Util.Values;
-import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import me.duncte123.botcommons.BotCommons;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
+import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.JSONObject;
 
@@ -22,8 +21,8 @@ import java.util.*;
 public class Listener extends ListenerAdapter {
     private CommandManager manager;
 
-    public Listener(EventWaiter waiter, JDA jda) {
-        final CommandManager manager = new CommandManager(waiter, jda);
+    public Listener(JDA jda) {
+        final CommandManager manager = new CommandManager(jda);
         jda.addEventListener(new SlashCommand(manager));
         this.manager = manager;
     }
@@ -41,8 +40,6 @@ public class Listener extends ListenerAdapter {
 
         event.getJDA().getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
         event.getJDA().getPresence().setActivity(Activity.watching("Loading the bot..."));
-
-        loadConfiguration(event.getJDA());
 
         int userCount = 0;
         for (Guild guild : event.getJDA().getGuilds()) {
@@ -131,17 +128,6 @@ public class Listener extends ListenerAdapter {
 
         }
 
-    }
-
-    public static void loadConfiguration(JDA jda) {
-        System.out.println("Loading configuration...");
-        JSONObject jsonConfig = Configuration.getJsonConfig(jda);
-        if (!jsonConfig.has("guilds")) {
-            JSONObject json = new JSONObject();
-            jsonConfig.put("guilds",json);
-        }
-        Configuration.setJsonConfig(jsonConfig);
-        System.out.println("Config loaded");
     }
 
 

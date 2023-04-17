@@ -1,7 +1,6 @@
 package DiscordBot;
 
 import DiscordBot.Util.BOT_MONITOR;
-import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -15,8 +14,6 @@ public class Bot implements EventListener {
     private static JDA jda;
 
     public static void main(String[] args) {
-
-        EventWaiter waiter = new EventWaiter();
 
         ChunkingFilter chkF = ChunkingFilter.NONE;
         MemberCachePolicy none = MemberCachePolicy.VOICE;
@@ -47,8 +44,7 @@ public class Bot implements EventListener {
             }
 
         System.out.println("Adding events...");
-        jda.addEventListener(waiter);
-        jda.addEventListener(new Listener(waiter,jda));
+        jda.addEventListener(new Listener(jda));
         new BOT_MONITOR(jda);
     }
 

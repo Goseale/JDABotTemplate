@@ -22,7 +22,7 @@ public class SlashCommand extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        String cmd = event.getCommandPath();
+        String cmd = event.getName();
         String subcmd = event.getSubcommandName();
 
         if (subcmd == null) {

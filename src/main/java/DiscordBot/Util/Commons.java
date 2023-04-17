@@ -172,54 +172,6 @@ public class Commons {
         calendar.setTimeInMillis(Long.parseLong(milliSeconds));
         return simpleDateFormat.format(calendar.getTime());
     }
-
-    public static Object JSONgetGuildProperty(JDA jda, Guild guild, String property) {
-        JSONObject jsonConfig = Configuration.getJsonConfig(jda);
-        JSONObject jguilds = (JSONObject) jsonConfig.get("guilds");
-        if (!jguilds.has(guild.getId())) {
-            JSONObject json = new JSONObject();
-            json.put(property, "");
-            json.put("name", guild.getName());
-            jguilds.put(guild.getId(), json);
-            jsonConfig.put("guilds", jguilds);
-            Configuration.setJsonConfig(jsonConfig);
-            return JSONgetGuildProperty(jda, guild, property);
-        } else {
-            JSONObject gProperties = (JSONObject) jguilds.get((guild.getId()));
-            if (!gProperties.has(property)) {
-                gProperties.put("name", guild.getName());
-                gProperties.put(property, "");
-                jguilds.put(guild.getId(), gProperties);
-                jsonConfig.put("guilds", jguilds);
-                Configuration.setJsonConfig(jsonConfig);
-                return "";
-            } else {
-                return gProperties.get(property);
-            }
-        }
-    }
-
-    public static void JSONsetGuildProperty(JDA jda, Guild guild, String property, Object value) {
-        JSONObject jsonConfig = Configuration.getJsonConfig(jda);
-        JSONObject jguilds = (JSONObject) jsonConfig.get("guilds");
-        if (!jguilds.has(guild.getId())) {
-            JSONObject json = new JSONObject();
-            json.put(property, value);
-            json.put("name", guild.getName());
-            jguilds.put(guild.getId(), json);
-            jsonConfig.put("guilds", jguilds);
-            Configuration.setJsonConfig(jsonConfig);
-            return;
-        } else {
-            JSONObject gProperties = (JSONObject) jguilds.get((guild.getId()));
-            gProperties.put(property, value);
-            gProperties.put("name", guild.getName());
-            jguilds.put(guild.getId(), gProperties);
-            jsonConfig.put("guilds", jguilds);
-            Configuration.setJsonConfig(jsonConfig);
-            return;
-        }
-    }
     public static EmbedBuilder coolEmbedGet(JDA jda, EmbedBuilder emb, String title, String message, Color color) {
         emb.setColor(color);
         emb.setAuthor(title, jda.getSelfUser().getAvatarUrl(), jda.getSelfUser().getAvatarUrl());
